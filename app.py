@@ -3,64 +3,48 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 
-st.title("My first Streamlit App")
-
-import streamlit as st
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-
-#load data set
-data =pd.read_csv("https://raw.githubusercontent.com/mwaskom/seaborn-data/master/penguins.csv")
-
+# Streamlit App Title
+st.title("My Toy Streamlit App")
 
 # Load the dataset
 data = sns.load_dataset("penguins").dropna()  # Drop missing values for cleaner plots
 
-# Streamlit App Title
-st.title("Interactive Streamlit Scatter Chart")
-
 # Sidebar for filtering options
-st.sidebar.header('Filter the Options')
+st.sidebar.header('Filter Options')
 
 # Category selection dropdown
 species_options = ['All'] + list(data['species'].unique())  # Add "All" option
 selected_category = st.sidebar.selectbox('Select Category', options=species_options)
 
 # Filter the dataset based on selection
-if selected_category != 'All':
-    filtered_data = data[data['species'] == selected_category]
-else:
-    filtered_data = data  # Show full dataset if "All" is selected
+filtered_data = data if selected_category == 'All' else data[data['species'] == selected_category]
 
-# Streamlit Scatter Chart
+# 📌 Streamlit Scatter Chart
 st.subheader("Streamlit Scatter Plot")
 st.scatter_chart(filtered_data, x='flipper_length_mm', y='body_mass_g', color='species')
 
-# Seaborn Scatter Plot
-st.subheader("Seaborn Scatter Plot")
-
-# Select a numerical column for the histogram
-hist_col = st.sidebar.selectbox("Select Column for Histogram", ["body_mass_g", "flipper_length_mm", "bill_length_mm"])
-
-# Create histogram
-fig2, ax2 = plt.subplots(figsize=(8, 5))
-sns.histplot(data=filtered_data, x=hist_col, hue="species", kde=True, palette="deep", bins=20, ax=ax2)
-st.pyplot(fig2)
-
-# Create a matplotlib figure
-fig, ax = plt.subplots(figsize=(8, 5))
-sns.scatterplot(data=filtered_data, x='flipper_length_mm', y='body_mass_g', hue='species', style='sex', palette='viridis', s=100, ax=ax)
-
-# Display the seaborn chart
-st.pyplot(fig)
-
-# Add descriptive text
+# 📌 Add descriptive text
 st.write("This interactive scatter chart allows you to filter penguin species and visualize their body mass against flipper length.")
 
-    
+
+# 📌 Seaborn Histogram 
+st.subheader("Seaborn Histogram")
+hist_col = st.selectbox("Select Column for Histogram", ["body_mass_g", "flipper_length_mm", "bill_length_mm"])
+fig1, ax1 = plt.subplots(figsize=(8, 5))
+sns.histplot(data=filtered_data, x=hist_col, color='blue', bins=20, kde=True, ax=ax1)
+st.pyplot(fig1)
 
 
+# 📌 Seaborn Scatter Plot
+st.subheader("Seaborn Scatter Plot")
+fig2, ax2 = plt.subplots(figsize=(8, 5))
+sns.scatterplot(data=filtered_data, x='flipper_length_mm', y='body_mass_g', hue='species', palette='viridis', s=100, ax=ax2)
+st.pyplot(fig2)
 
+# 📌 Bar Chart
+st.subheader("Penguin Species Count - Bar Chart")
+fig3, ax3 = plt.subplots(figsize=(8, 5))
+sns.countplot(data=filtered_data, x='species', palette='coolwarm', ax=ax3)
+st.pyplot(fig3)
 
 
